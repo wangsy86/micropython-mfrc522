@@ -99,8 +99,8 @@ class MFRC522Reader:
                 return False
             new_uid = self.buffer_uid
 
-        if len(new_uid) != 4:
-            print("UID must be 4 bytes long")
+        if len(new_uid) != 5:
+            print("UID must be 5 bytes long")
             return False
 
         if sector0_key_a is None:
@@ -180,9 +180,9 @@ class MFRC522Reader:
 
         # 创建块0数据
         block0 = bytearray(16)
-        block0[0:4] = uid           # 原始UID (4字节)
+        block0[0:4] = bytes(uid[0:4])           # 原始UID (4字节)
         block0[4] = bcc             # UID校验 (1字节)
-        block0[5:9] = uid[::-1]     # UID反向 (4字节)
+        block0[5:9] = bytes(uid[0:4][::-1])    # UID反向 (4字节)
         block0[9] = bcc ^ 0xFF      # BCC反向 (1字节)
         # 位置10-15是制造商数据和访问位，通常保持默认值
         block0[10] = 0x00  # 制造商字节
@@ -205,3 +205,6 @@ class MFRC522Reader:
     def get_buffer_test(self):
         """获取buffer_test值"""
         return self.buffer_test
+
+
+reader = MFRC522Reader()
